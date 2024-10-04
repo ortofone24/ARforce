@@ -15,13 +15,20 @@ namespace ARforce.Controllers
             var query = _context.Books.AsQueryable();
 
             // SortingBy
-            query = SortingAndPagination.SortingBy(sortBy, query);//Queryable(sortBy, query);
+            query = SortingAndPagination.SortingBy(sortBy, query);
 
             // Pagination
             var totalItems = await query.CountAsync();
-            var items = await SortingAndPagination.Items(page, pageSize, query);//Items(page, pageSize, query);
+            var items = await SortingAndPagination.Items(page, pageSize, query);
 
-            var result = new
+            //var result = new
+            //{
+            //    TotalItems = totalItems,
+            //    Page = page,
+            //    PageSize = pageSize,
+            //    Items = items
+            //};
+            var result = new GetBooksResponse
             {
                 TotalItems = totalItems,
                 Page = page,
@@ -31,7 +38,7 @@ namespace ARforce.Controllers
 
             return Ok(result);
         }
-        
+
         // GET: api/Books/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBook(int id)
@@ -50,6 +57,12 @@ namespace ARforce.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            if (_context.Books.Any(b => b.ISBN == bookDto.ISBN))
+            {
+                ModelState.AddModelError("ISBN", "ISBN must be unique.");
+                return BadRequest(ModelState);
+            }
+
             var book = new Book
             {
                 Title = bookDto.Title,
@@ -65,15 +78,7 @@ namespace ARforce.Controllers
             }
             catch (DbUpdateException)
             {
-                if (_context.Books.Any(b => b.ISBN == book.ISBN))
-                {
-                    ModelState.AddModelError("ISBN", "ISBN must be unique.");
-                    return BadRequest(ModelState);
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while saving data. Please try again later." });
-                }
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while saving data. Please try again later." });
             }
 
             return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
@@ -81,12 +86,10 @@ namespace ARforce.Controllers
 
         // PUT: api/Books/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(int id, [FromBody] Book updatedBook)
+        public async Task<IActionResult> UpdateBook(int id, [FromBody] UpdateBookDto updatedBook)
         {
-            if (id != updatedBook.Id)
-                return BadRequest();
-
             var existingBook = await _context.Books.FindAsync(id);
+
             if (existingBook == null)
                 return NotFound();
 
@@ -97,7 +100,6 @@ namespace ARforce.Controllers
 
             existingBook.Title = updatedBook.Title;
             existingBook.Author = updatedBook.Author;
-            existingBook.ISBN = updatedBook.ISBN;
             existingBook.Status = updatedBook.Status;
 
             try
@@ -106,15 +108,7 @@ namespace ARforce.Controllers
             }
             catch (DbUpdateException)
             {
-                if (_context.Books.Any(b => b.ISBN == updatedBook.ISBN && b.Id != id))
-                {
-                    ModelState.AddModelError("ISBN", "ISBN must be unique.");
-                    return BadRequest(ModelState);
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while saving data. Please try again later." });
-                }
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while saving data. Please try again later." });
             }
 
             return NoContent();
