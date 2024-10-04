@@ -5,8 +5,6 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ARforce", "ARforce.csproj", "{89E0F4AB-D4CD-4B92-B680-406E2994955E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARforce.Tests", "..\ARforce.Tests\ARforce.Tests.csproj", "{73327249-7704-43C3-84CE-2783EDDC75FB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{89E0F4AB-D4CD-4B92-B680-406E2994955E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89E0F4AB-D4CD-4B92-B680-406E2994955E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89E0F4AB-D4CD-4B92-B680-406E2994955E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{73327249-7704-43C3-84CE-2783EDDC75FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{73327249-7704-43C3-84CE-2783EDDC75FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{73327249-7704-43C3-84CE-2783EDDC75FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{73327249-7704-43C3-84CE-2783EDDC75FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
