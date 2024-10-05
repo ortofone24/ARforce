@@ -1,17 +1,47 @@
 ﻿using ARforce.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace ARforce.Common
 {
-    public static class SortingAndPagination
+    public interface ISortingAndPagination
     {
-        public static async Task<List<Book>> Items(int page, int pageSize, IQueryable<Book> query)
+        Task<List<ReturnBookDto>> Items(int page, int pageSize, IQueryable<Book> query);
+        IQueryable<Book> SortingBy(string sortBy, IQueryable<Book> query);
+    }
+
+    public class SortingAndPagination : ISortingAndPagination
+    {
+        public async Task<List<ReturnBookDto>> Items(int page, int pageSize, IQueryable<Book> query)
         {
-            var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-            return items;
+            if (page < 1)
+                throw new ArgumentOutOfRangeException(nameof(page), "Page must be greater than zero.");
+            if (pageSize < 1)
+                throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be greater than zero.");
+
+            var itemsQuery = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(book => new ReturnBookDto
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    Author = book.Author,
+                    ISBN = book.ISBN,
+                    Status = book.Status
+                });
+
+            if (query.Provider is IAsyncQueryProvider)
+            {
+                return await itemsQuery.ToListAsync();
+            }
+            else
+            {
+                return itemsQuery.ToList();
+            }
         }
 
-        public static IQueryable<Book> SortingBy(string sortBy, IQueryable<Book> query)
+        public IQueryable<Book> SortingBy(string sortBy, IQueryable<Book> query)
         {
             query = sortBy?.ToLower() switch
             {

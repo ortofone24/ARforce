@@ -2,7 +2,7 @@
 
 namespace ARforce.Models
 {
-    public class Book
+    public record ReturnBookDto
     {
         public int Id { get; set; }
 
@@ -12,12 +12,8 @@ namespace ARforce.Models
         public string Author { get; set; }
 
         [Required]
-        public string ISBN { get; set; } 
+        public string ISBN { get; set; }
 
         public BookStatus Status { get; set; } = BookStatus.OnShelf;
-
-        [Timestamp]
-        public byte[] RowVersion { get; set; }
     }
-
 }

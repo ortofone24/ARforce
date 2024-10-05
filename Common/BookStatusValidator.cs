@@ -2,9 +2,14 @@
 
 namespace ARforce.Common
 {
-    public static class BookStatusValidator
+    public interface IBookStatusValidator
     {
-        public static bool IsValidTransition(BookStatus currentStatus, BookStatus newStatus)
+        bool IsValidTransition(BookStatus currentStatus, BookStatus newStatus);
+    }
+
+    public class BookStatusValidator : IBookStatusValidator
+    {
+        public bool IsValidTransition(BookStatus currentStatus, BookStatus newStatus)
         {
             return newStatus switch
             {
