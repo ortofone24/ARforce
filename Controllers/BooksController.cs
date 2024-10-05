@@ -20,14 +20,7 @@ namespace ARforce.Controllers
             // Pagination
             var totalItems = await query.CountAsync();
             var items = await SortingAndPagination.Items(page, pageSize, query);
-
-            //var result = new
-            //{
-            //    TotalItems = totalItems,
-            //    Page = page,
-            //    PageSize = pageSize,
-            //    Items = items
-            //};
+            
             var result = new GetBooksResponse
             {
                 TotalItems = totalItems,
